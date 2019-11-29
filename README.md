@@ -14,7 +14,7 @@ Deactivate the environment with `deactivate`.
 ## Optional
   (a). Provide a mir file (peak selection file) to reduce data sets generated to the specified peak selection.
 
-  (b). Use consensus_peaklist.py to align multiple **peak selected** data sets. Peaks with a user specified percentual overlap will be merged. <br> **Important:** This method will only change the representative *m/z* value of peaks. The intensity will remain as the sum over the original peak range, i.e. a shifting will be simulated without changing the peaks in the original data. The new peak values should not be used in relation with the original data set!
+  (b). Call `python consensus_peaklist.py` to align multiple **peak selected** data sets. Peaks with a user specified percentual overlap will be merged. For parameter details call `python consensus_peaklist.py -h`. <br> **Important:** This method will only change the representative *m/z* value of peaks. The intensity will remain as the sum over the original peak range, i.e. a shifting will be simulated without changing the peaks in the original data. The new peak values should not be used in relation with the original data set!
 
   (c). Provide a mis file to generate position mapping images and scaled images.
 

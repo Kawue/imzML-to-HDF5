@@ -77,18 +77,6 @@ def find_consensus_peaks(t, *args):
 					if peak_ranges in v:
 						peak_dict[k].extend([peak])
 	
-	# ?: elemination of double new peaks necessary?
-	'''
-	#eleminate double entries
-	for key, value in peak_dict:
-		### test area ###
-		test = list(set(value))[:]
-		test.sort()
-		if test != list(set(value)):
-			print("not sorted!!!")
-		### test end ###
-		peak_dict[key] = list(set(value))
-	'''
 
 	for key, value in peak_dict.items(): # ?: should work because of ordered
 		parsed_frames[key].columns = value
@@ -199,18 +187,3 @@ if __name__ == "__main__":
 		find_consensus_peaks(args.t, *path_tuples)
 	except:
 		parser.print_help()
-
-
-'''
-print("#####")
-mir_1 = "C:\\Users\\kwuellems\\Desktop\\test5\\20180221_healthy_gs_AF.mir"
-mir_2 = "C:\\Users\\kwuellems\\Desktop\\test5\\20180221_PXE_gs_AF.mir"
-
-frame_1 = "C:\\Users\\kwuellems\\Desktop\\test5\\skin_healthy_processed_picked\\20171115_DHB_RP_HS_healthy_3_oversampling_AF_processed.h5"
-frame_2 = "C:\\Users\\kwuellems\\Desktop\\test5\\skin_pxe_processed_picked\\20171115_DHB_RP_HS_PXE_1_oversampling_AF_processed.h5"
-
-print("begin")
-find_consensus_peaks(0.5, (mir_1, frame_1), (mir_2, frame_2))
-print("end")
-print("###################")
-'''
