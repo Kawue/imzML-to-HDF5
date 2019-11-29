@@ -9,7 +9,7 @@ Deactivate the environment with `deactivate`.
 
 # Execution
 1. Call `activate msiparse`.
-2. Use msiproc.py to convert from imzml + ibd to h5 data. This requires a lot of memory for bigger imzml/ibd files and should be executed on a cluster.
+2. Call `python msiproc.py` to convert from imzml + ibd to h5 data. This requires a lot of memory for bigger imzml/ibd files and should be executed on a cluster. For parameter details call `msiproc.py -h`
 
 ## Optional
   (a). Provide a mir file (peak selection file) to reduce data sets generated to the specified peak selection.
