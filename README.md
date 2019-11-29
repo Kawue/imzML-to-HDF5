@@ -12,9 +12,11 @@ Deactivate the environment with `deactivate`.
 2. Use msiproc.py to convert from imzml + ibd to h5 data. This requires a lot of memory for bigger imzml/ibd files and should be executed on a cluster.
 
 ## Optional
-a. Provide a mir file (peak selection file) to reduce data sets generated to the specified peak selection.
-b. Use consensus_peaklist.py to align multiple **peak selected** data sets. Peaks with a user specified percentual overlap will be merged. <br> **Important:** This method will only change the representative *m/z* value of peaks. The intensity will remain as the sum over the original peak range, i.e. a shifting will be simulated without changing the peaks in the original data. The new peak values should not be used in relation with the original data set!
-c. Provide a mis file to generate position mapping images and scaled images.
+  (a). Provide a mir file (peak selection file) to reduce data sets generated to the specified peak selection.
+
+  (b). Use consensus_peaklist.py to align multiple **peak selected** data sets. Peaks with a user specified percentual overlap will be merged. <br> **Important:** This method will only change the representative *m/z* value of peaks. The intensity will remain as the sum over the original peak range, i.e. a shifting will be simulated without changing the peaks in the original data. The new peak values should not be used in relation with the original data set!
+
+  (c). Provide a mis file to generate position mapping images and scaled images.
 
 Hints and issues:
  * The following files have to be named equally: imzml, ibd(, mis).
