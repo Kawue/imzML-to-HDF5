@@ -3,7 +3,7 @@ Parser to convert MSI imzML files into HDF5 files.
 
 # Preconditions
 Python is needed for execution. We recomment to install anaconda from https://www.anaconda.com/distribution/#download-section .
-Afterwards, use the predefined anaconda environment. Therefore, open your console, navigate into the imzML-to-HDF5 package and call `create -f environment.yml`.
+Afterwards, use the predefined anaconda environment. Therefore, open your console, navigate into the imzML-to-HDF5 package and call `conda env create -f .\environment.yml`.
 Activate the environment with `activate msiparse` (Windows users should use the CMD instead of powershell). Activation needs to be done every time before the parser is called.
 Deactivate the environment with `deactivate`.
 
