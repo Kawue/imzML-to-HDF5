@@ -141,10 +141,11 @@ def register_gridcoords_with_image(path_to_imzml_file, path_to_mis_file, out_pat
 
 def intensities_generator(imzmlParser, mz_index, selection=slice(None)):
 	for i in range(len(imzmlParser.coordinates)):
-		spec = np.zeros(len(mz_index))
-		idx = np.in1d(mz_index, np.array(imzmlParser.getspectrum(i)[0])[selection])
-		spec[idx] = np.array(imzmlParser.getspectrum(i)[1])[selection]
-		yield spec
+		full_spec = np.zeros(len(mz_index))
+		mz_spec, unique_mz = np.unique(imzmlParser.getspectrum(i)[0][selection], return_index=True)
+		idx = np.in1d(mz_index, mz_spec)
+		full_spec[idx] = imzmlParser.getspectrum(i)[1][selection][unique_mz]
+		yield full_spec
 
 
 def imzml_to_hdf5(imzml_file_path, out_path, mir_path):
@@ -167,15 +168,15 @@ def imzml_to_hdf5(imzml_file_path, out_path, mir_path):
 			mz_index_error_flag = True
 	if mz_index_error_flag:
 		print('WARNING: Not all spectra have the same mz values. Missing values are filled with zeros!')
-	mz_index = np.array(mz_index)
-
+	mz_index = np.array(sorted(mz_index))
+	
 	# DEV: use small range to test bigger datasets on little memory
 	mz_selection = slice(None) # range(100)
 	# load all intensities into a single data frame
 	# resulting format:
 	#   1 row = 1 spectrum
 	#   1 column = all intensities for 1 mz, that is all values for a single intensity image
-	msi_frame = pd.DataFrame(intensities_generator(p, mz_selection), columns=mz_index[mz_selection])
+	msi_frame = pd.DataFrame(intensities_generator(p, mz_index, mz_selection), columns=mz_index[mz_selection])
 	if mir_path:
 		msi_frame = select_peaks_from_msi_frame(msi_frame, mir_path)
 
