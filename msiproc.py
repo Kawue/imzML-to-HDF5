@@ -139,9 +139,12 @@ def register_gridcoords_with_image(path_to_imzml_file, path_to_mis_file, out_pat
 	np.savez_compressed(coord_map_path, coordmap=coord_mapping)
 
 
-def intensities_generator(imzmlParser, selection=slice(None)):
+def intensities_generator(imzmlParser, mz_index, selection=slice(None)):
 	for i in range(len(imzmlParser.coordinates)):
-		yield np.array(imzmlParser.getspectrum(i)[1])[selection]
+		spec = np.zeros(len(mz_index))
+		idx = np.in1d(mz_index, np.array(imzmlParser.getspectrum(i)[0])[selection])
+		spec[idx] = np.array(imzmlParser.getspectrum(i)[1])[selection]
+		yield spec
 
 
 def imzml_to_hdf5(imzml_file_path, out_path, mir_path):
