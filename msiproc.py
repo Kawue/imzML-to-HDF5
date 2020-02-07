@@ -156,11 +156,14 @@ def imzml_to_hdf5(imzml_file_path, out_path, mir_path):
 	num_spectra = len(p.mzLengths)
 	mz_index = np.array(p.getspectrum(0)[0])
 	mz_index_length = len(mz_index)
+	mz_index_error_flag = False
 	for i in range(1, num_spectra):
 		# '0' = mz values, '1' = intensities
 		mz_index = list(set(mz_index) | set(np.array(p.getspectrum(i)[0])))
 		if len(mz_index) != mz_index_length:
-			print('WARNING: Not all spectra have the same mz values. Missing values are filled with zeros!')
+			mz_index_error_flag = True
+	if mz_index_error_flag:
+		print('WARNING: Not all spectra have the same mz values. Missing values are filled with zeros!')
 	mz_index = np.array(mz_index)
 
 	# DEV: use small range to test bigger datasets on little memory
