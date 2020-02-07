@@ -155,11 +155,13 @@ def imzml_to_hdf5(imzml_file_path, out_path, mir_path):
 	# check if all spectra have the same mz axis
 	num_spectra = len(p.mzLengths)
 	mz_index = np.array(p.getspectrum(0)[0])
+	mz_index_length = len(mz_index)
 	for i in range(1, num_spectra):
 		# '0' = mz values, '1' = intensities
-		if not np.all(mz_index == np.array(p.getspectrum(i)[0])):
-			raise Exception(
-				'Not all spectra have the same mz values. This is currently not supported.')
+		mz_index = list(set(mz_index) | set(np.array(p.getspectrum(i)[0])))
+		if len(mz_index) != mz_index_length:
+			print('WARNING: Not all spectra have the same mz values. Missing values are filled with zeros!')
+	mz_index = np.array(mz_index)
 
 	# DEV: use small range to test bigger datasets on little memory
 	mz_selection = slice(None) # range(100)
@@ -170,6 +172,8 @@ def imzml_to_hdf5(imzml_file_path, out_path, mir_path):
 	msi_frame = pd.DataFrame(intensities_generator(p, mz_selection), columns=mz_index[mz_selection])
 	if mir_path:
 		msi_frame = select_peaks_from_msi_frame(msi_frame, mir_path)
+
+	msi_frame = msi_frame.fillna(0)
 
 	xycoordinates = np.asarray(p.coordinates)[:,[0,1]]
 	multi_index = pd.MultiIndex.from_arrays(xycoordinates.T, names=("grid_x", "grid_y"))
