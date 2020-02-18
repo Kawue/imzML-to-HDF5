@@ -26,5 +26,4 @@ dependencies:
   - wheezy.template=0.1.167
   - pip:
     - opencv-python==4.1.2.30
-prefix: C:\Users\kwuellems\Anaconda3\envs\msiparse
 
