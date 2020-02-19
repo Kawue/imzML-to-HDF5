@@ -25,4 +25,5 @@ dependencies:
   - sqlite=3.30.1
   - wheel=0.33.6
   - wheezy.template=0.1.167
-  - opencv==4.2.0
+  - pip:
+    - opencv-python==4.1.2.30
