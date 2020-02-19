@@ -14,6 +14,7 @@ dependencies:
   - numpy=1.17.3
   - openssl=1.1.1d
   - pandas=0.25.3
+  - pytables=3.6.1
   - pip=19.3.1
   - pyimzml=1.2.6
   - python=3.8.0
@@ -24,6 +25,4 @@ dependencies:
   - sqlite=3.30.1
   - wheel=0.33.6
   - wheezy.template=0.1.167
-  - pip:
-    - opencv-python==4.1.2.30
-
+  - opencv==4.2.0
