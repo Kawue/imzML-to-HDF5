@@ -69,7 +69,7 @@ def register_gridcoords_with_image(path_to_imzml_file, path_to_mis_file, out_pat
 	print('raster_shape_yx_grid_coord', raster_shape_yx_grid_coord)
 
 	# using the imzML meta data
-	p = ImzMLParser(path_to_imzml_file)
+	p = ImzMLParser(path_to_imzml_file, parse_lib='ElementTree')
 	Position = namedtuple('Position', ['x', 'y'])
 	coord_pairs = []
 	for coordinate in p.coordinates:
@@ -154,21 +154,25 @@ def imzml_to_hdf5(imzml_file_path, out_path, mir_path):
 
 	print()
 	print('Loading', imzml_file_path)
-	p = ImzMLParser(imzml_file_path)
+	p = ImzMLParser(imzml_file_path, parse_lib='ElementTree')
+	print()
+	print('Loading done!')
 
 	# check if all spectra have the same mz axis
 	num_spectra = len(p.mzLengths)
 	mz_index = np.array(p.getspectrum(0)[0])
 	mz_index_length = len(mz_index)
-	mz_index_error_flag = False
-	for i in range(1, num_spectra):
-		# '0' = mz values, '1' = intensities
-		mz_index = list(set(mz_index) | set(np.array(p.getspectrum(i)[0])))
-		if len(mz_index) != mz_index_length:
-			mz_index_error_flag = True
-	if mz_index_error_flag:
+	print()
+	print('m/z consistency check ...')
+
+	# '0' = mz values, '1' = intensities
+	mz_index = np.unique(np.concatenate([p.getspectrum(i)[0] for i in range(num_spectra)]))
+	
+	if len(mz_index) != mz_index_length:
 		print('WARNING: Not all spectra have the same mz values. Missing values are filled with zeros!')
-	mz_index = np.array(sorted(mz_index))
+
+	print()
+	print('m/z consistency check done!')
 	
 	# DEV: use small range to test bigger datasets on little memory
 	mz_selection = slice(None) # range(100)
@@ -176,9 +180,17 @@ def imzml_to_hdf5(imzml_file_path, out_path, mir_path):
 	# resulting format:
 	#   1 row = 1 spectrum
 	#   1 column = all intensities for 1 mz, that is all values for a single intensity image
+	print()
+	print('DataFrame creation ...')
 	msi_frame = pd.DataFrame(intensities_generator(p, mz_index, mz_selection), columns=mz_index[mz_selection])
+	print()
+	print('DataFrame creation done')
 	if mir_path:
+		print()
+		print('Peak picking ...')
 		msi_frame = select_peaks_from_msi_frame(msi_frame, mir_path)
+		print()
+		print('Peak picking done!')
 
 	msi_frame = msi_frame.fillna(0)
 
@@ -192,10 +204,14 @@ def imzml_to_hdf5(imzml_file_path, out_path, mir_path):
 	# DEV ad-hoc fix (couldn't figure out the cause or a more reasonable fix so far)
 	msi_frame[msi_frame < 0] = 0
 
+	print()
+	print('Write DataFrame ...')
 	h5_store_path = os.path.join(out_path, dataset_name + '.h5')
 	save_name_frame = 'msi_frame_' + dataset_name
 	with pd.HDFStore(h5_store_path, complib='blosc', complevel=9) as store:
 		store[save_name_frame] = msi_frame
+	print()
+	print('done. Script completed!')
 
 
 if __name__ == "__main__":
