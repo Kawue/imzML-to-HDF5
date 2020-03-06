@@ -183,8 +183,11 @@ def imzml_to_hdf5(imzml_file_path, out_path, mir_path):
 	print()
 	print('DataFrame creation ...')
 	msi_frame = pd.DataFrame(intensities_generator(p, mz_index, mz_selection), columns=mz_index[mz_selection])
-	print()
 	print('DataFrame creation done')
+	print()
+	print("DataFrame size equals: %i pixels, %i mz-values"%msi_frame.shape)
+	print()
+
 	if mir_path:
 		print()
 		print('Peak picking ...')
@@ -198,7 +201,9 @@ def imzml_to_hdf5(imzml_file_path, out_path, mir_path):
 	multi_index = pd.MultiIndex.from_arrays(xycoordinates.T, names=("grid_x", "grid_y"))
 	msi_frame.set_index(multi_index, inplace=True)
 
-	
+	msi_frame["dataset"] = [dataset_name]*msi_frame.shape[0]
+	msi_frame = msi_frame.set_index("dataset", append=True)
+
 	# For some data sets a small fraction of intensities (~0.1%) have been
 	# negative, this might be a numerical issue in the imzml export by bruker.
 	# DEV ad-hoc fix (couldn't figure out the cause or a more reasonable fix so far)
