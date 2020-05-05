@@ -13,7 +13,8 @@ def convert(h5file, outpath, filename):
 
     with ImzMLWriter(join(outpath, filename)) as writer:
         for coords, series in data.iterrows():
-            gx,gy,rx,ry = coords
+            #gx,gy,rx,ry = coords
+            gx,gy,_ = coords
             mzs = np.array(series.index)
             intensities = series.values
             writer.addSpectrum(mzs, intensities, (gx,gy))
